@@ -15,8 +15,6 @@ public class DilMandioca extends AdvancedRobot {
 		setBulletColor(Color.yellow);
 		setScanColor(new Color(0, 255, 0));
 		
-		System.out.println(getName());
-
 		while (true) {
 			setAhead(40000);
 			movingForward = true;
@@ -48,10 +46,10 @@ public class DilMandioca extends AdvancedRobot {
 		
 		System.out.println(e.getDistance());
 		
-		if(e.getDistance() >= 0.0  && e.getDistance() <= 100.00 ){
+		if(e.getDistance() >= 0.0  && e.getDistance() <= 50.00 ){
 			fire(3);
 		}
-		else if(e.getDistance() > 100.0  && e.getDistance() <= 200.00 ){
+		else if(e.getDistance() > 50.0  && e.getDistance() <= 200.00 ){
 			fire(2);
 		}
 		else if(e.getDistance() > 200.0  && e.getDistance() <= 300.00 ){
