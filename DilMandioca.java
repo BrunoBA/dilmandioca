@@ -19,7 +19,8 @@ public class DilMandioca extends AdvancedRobot {
 			
 			System.out.println("Daale");
 			
-			setAhead(40000);
+			movimentar();
+
 			movingForward = true;
 			setTurnRight(90);
 			waitFor(new TurnCompleteCondition(this));
@@ -30,12 +31,29 @@ public class DilMandioca extends AdvancedRobot {
 		}
 	}
 
+	
+	public void movimentar(){
+		setAhead(40000);
+		
+		if(40000 + getX() > getBattleFieldHeight()){
+			setAhead(getX() - getBattleFieldHeight());
+		}
+		if(40000 + getY() > getBattleFieldWidth()){
+			setAhead(getY() - getBattleFieldWidth());
+		}
+		if(getX() - 40000 < 0){
+			setAhead(getX() - 40000);
+		}
+		if(getY() - 40000 < 0){
+			setAhead(getY() - 40000);
+		}
+	}
+	
 	public void onHitWall(HitWallEvent e) {
-		// Bounce off!
 		System.out.println("Merda, bati na parede");
 		reverseDirection();
 	}
-
+	
 	public void reverseDirection() {
 		if (movingForward) {
 			setBack(40000);
@@ -57,15 +75,22 @@ public class DilMandioca extends AdvancedRobot {
 		
 		//para virar seu robô em direção do adversário
 		turnRight(anguloRelativo(e.getBearing())); 
-		
-		if(e.getDistance() >= 0.0  && e.getDistance() <= 50.00 ){
-			fire(3);
-		}
-		else if(e.getDistance() > 50.0  && e.getDistance() <= 200.00 ){
-			fire(2);
-		}
-		else if(e.getDistance() > 200.0  && e.getDistance() <= 300.00 ){
-			fire(1);
+		if(myLife(getEnergy())){	
+			if(e.getDistance() >= 0.0  && e.getDistance() <= 50.00 ){
+				fire(3);
+			}
+			else if(e.getDistance() > 50.0  && e.getDistance() <= 200.00 ){
+				if(enemyLife(e.getEnergy())){
+					fire(3);	
+				}
+				fire(2);
+			}
+			else if(e.getDistance() > 200.0  && e.getDistance() <= 300.00 ){
+				if(enemyLife(e.getEnergy())){
+					fire(3);		
+				}
+				fire(1);
+			}
 		}
 	}
 	
@@ -75,21 +100,7 @@ public class DilMandioca extends AdvancedRobot {
 		turnRadarRight(anguloRelativo(e.getBearing()+getHeading()-getRadarHeading()));
 		
 		//para mirar o canhão no adversário.
-		turnGunRight(anguloRelativo(e.getBearing()+getHeading()-getGunHeading())); 
-
-//		if(e.getBearing() >= 0){
-//			if(getGunHeading() >= 0 && getGunHeading() < 180){
-//				
-//			}
-//			System.out.println("Direita");
-//		}
-//		else{
-//			if(getGunHeading() >= 0 && getGunHeading() < 180){
-//				
-//			}
-//			System.out.println("Esquerda");
-//		}
-			
+		turnGunRight(anguloRelativo(e.getBearing()+getHeading()-getGunHeading())); 	
 			
 	}
 	
@@ -116,5 +127,20 @@ public class DilMandioca extends AdvancedRobot {
 			REL -= 360;
 		}
 		return REL;
+	}
+	
+	// Método feito para a mudança de comportamento de ataque do rôbo (atacar mais)
+	private boolean enemyLife(double life){
+	
+		if(life < 20)
+			return true;
+		return false;
+	}
+	
+	// Método feito para a mudança de comportamento para defesa do rôbo (defesa/sobrevivencia)
+	private boolean myLife(double life){
+		if(life < 10)
+			return true;
+		return false;
 	}
 }
